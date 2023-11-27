@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+    <context:property-placeholder location="classpath:application.properties"/>
+
+    <bean id="repo1" name="r1" class="com.learn.springstarterlearn.database.repository.UserRepository" init-method="init" destroy-method="destroy">
+        <constructor-arg name="userName" value="${db.userName}"/>
+        <constructor-arg name="poolSize" value="${db.pool.size}"/>
+        <constructor-arg name="args">
+            <list>
+                <value>1</value>
+                <value>2</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg name="properties">
+            <map>
+                <entry key="key1" value="test1"/>
+                <entry key="key2" value="test2"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="repo2" name="r2" class="com.learn.springstarterlearn.database.repository.UserRepository">
+        <property name="userName" ref="driver"/>
+        <property name="properties">
+            <map>
+                <entry key="key1" value="test1"/>
+                <entry key="key2" value="test2"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="driver" class="java.lang.String">
+        <constructor-arg value="PostresDriver"/>
+    </bean>
+
+    <bean name="userDTO" class="com.learn.springstarterlearn.dto.UserDTO" scope="prototype"/>
+
+    <bean name="user-service" class="com.learn.springstarterlearn.services.UserService">
+        <constructor-arg name="userMapper" ref="user-mapper"/>
+        <constructor-arg name="userRepository" ref="repo2"/>
+    </bean>
+
+    <bean name="user-mapper" class="com.learn.springstarterlearn.mapper.UserMapper">
+        <constructor-arg name="userDTO" ref="userDTO"/>
+    </bean>
+
+
+</beans>
